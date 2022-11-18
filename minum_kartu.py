@@ -1,27 +1,12 @@
 from contextlib import nullcontext
-# Setiap pemain memiliki n kartu awal sebagai awalan (diinput oleh user)
-# o Sisa pembagian kartu menjadi deck yang dihadapkan ke bawah
-# o Di awal permainan, dibuka 1 kartu awalan dari deck sebagai acuan awal pemain
-# o Setiap pemain membuang kartu yang jenisnya sama dengan kartu awalan tersebut
-# o Pemain yang membuang kartu dengan nilai terbesar selanjutnya akan membuang kartu 
-# sembarang (menjadi kartu acuan) yang pemain lainnya harus membuang dengan jenis 
-# yang sama
-# o Nilai dari tiap kartu diurutkan dari yang paling rendah ke yang paling tinggi sebagai 
-# berikut: 2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K, As
-# o Jika pemain tidak memiliki kartu dengan jenis yang sama, maka akan mengambil kartu 
-# dari deck hingga pemain memiliki kartu dengan jenis yang sama
-# o Jika deck sudah habis dan pemain masih belum memiliki kartu dengan jenis yang sama, 
-# maka pemain mengambil kartu yang dibuang oleh pemain lainnya
-# o Pemenang dari permainan ini merupakan pemain yang menghabiskan kartu di tangannya 
-# lebih awal.
 
 import random
 # mulai tampilan
 print("\n \n")
 print("PERMAINAN KARTU MINUMAN")
 jumlah_kartu_tangan = input("Masukkan Jumlah Kartu Yang Di Bagi :")
-# name1 = input("Masukkan Nama Mu  : ")
-# name2 = input("Masukkan Nama Bot : ")
+name1 = input("Masukkan Nama Mu  : ")
+name2 = input("Masukkan Nama Bot : ")
 
 # nama tempat list kartu
 list_kartu = []
@@ -87,7 +72,10 @@ def ambil_kartu_bot(kartu_musuh):
         return data
     ambil_kartu_bot_dari_deck()
         
-
+def ambil_kartu_dari_player(kartu_player):
+    kartu_bot.append(kartu_player)
+def ambil_kartu_dari_bot(kartu_bot):
+    kartu_player.append(kartu_bot)
 def cek_kartu_bot(kartu_sendiri,kartu_musuh):
   if str(kartu_sendiri[1]) == str(kartu_musuh[1]): return "1"
   else : return "0"
@@ -180,7 +168,12 @@ while True:
                     break
             # bot memilih kartu
             kartu_acuan = kartu_pilihan_player
-            kartu_pilihan_bot = ambil_kartu_bot(kartu_acuan)
+            if(len(kartu_bot) < 1 and len(list_kartu) < 1):
+                ambil_kartu_dari_player(kartu_acuan)
+                print("Bot Mengambil kartu yang anda keluarkan")
+                kesempatan = "player"
+            else:
+                kartu_pilihan_bot = ambil_kartu_bot(kartu_acuan)
             
             print("\n\n==================================================================")
             print("Kartu Pilihan Player : " + str(nama_kartu(kartu_pilihan_player)))
@@ -218,15 +211,21 @@ while True:
                     tambah_kartu_player() 
                     True
                 elif pilihan == "1":
-                    while True :
-                        keluar = input("\nMau Pake Kartu Yang Mana? :")
-                        if int(keluar) < len(kartu_player) :
-                            kartu_pilihan_player = ambil_kartu_player(keluar)
-                            print("Kartu Pilihan Player : " + str(nama_kartu(kartu_pilihan_player)))
-                            kesempatan = menang(kartu_pilihan_player,kartu_pilihan_bot)
-                            break
-                        else : True
-                    break
+                    if (len(kartu_player) < 1 and len(list_kartu) < 1):
+                        print("\nKartu anda habis \nAnda bisa mengambil kartu")
+                        ambil_kartu_dari_bot(kartu_acuan)
+                        kesempatan = "bot"
+                        True
+                    else :
+                        while True :
+                            keluar = input("\nMau Pake Kartu Yang Mana? :")
+                            if int(keluar) < len(kartu_player) :
+                                kartu_pilihan_player = ambil_kartu_player(keluar)
+                                print("Kartu Pilihan Player : " + str(nama_kartu(kartu_pilihan_player)))
+                                kesempatan = menang(kartu_pilihan_player,kartu_pilihan_bot)
+                                break
+                            else : True
+                        break
         else:
             print("\n\n\n==========================================================")
             print("Permainan Selesai Bot Menang")
